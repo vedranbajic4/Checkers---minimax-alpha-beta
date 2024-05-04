@@ -246,7 +246,6 @@ if __name__ == "__main__":
         [0, 0, 0, 0, 0, 0, 0, 1],
         [2, 0, 3, 0, 0, 0, 0, 0]
     ]
-
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -259,4 +258,3 @@ if __name__ == "__main__":
 
         draw_board()
         pygame.display.update()'''
-
