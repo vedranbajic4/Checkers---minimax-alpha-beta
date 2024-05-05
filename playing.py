@@ -1,13 +1,24 @@
+import time
+
 DAMA = 40
 INF = 100000000
+EXECTIME = 5    # execution time of minimnax algoritahm
 
 moves = []
 value_dame = [0, 50, 90, 120, 145, 167, 187, 207, 220, 233, 246, 255, 260]
 value_chipa = [0, 30, 60, 90, 120, 140, 160, 180, 200, 215, 230, 240, 250]
 dikt = {}
 
+
 def in_bounds(r, c):
     return 7 >= r >= 0 and 7 >= c >= 0
+
+
+def to_string(player):
+    if player == 1:
+        return "1"
+    if player == 2:
+        return "2"
 
 
 def opposite_player(p):
@@ -25,7 +36,8 @@ def state_of_board(board):  # True ako je neko pobedio
                 jed += 1
             elif board[i][j] == 2 or board[i][j] == 4:
                 dva += 1
-    return jed == 0 or dva == 0
+
+    return dva == 0 or jed == 0
 
 
 def onion_rings(r):
@@ -38,10 +50,21 @@ def print_board(board):
     print("Board:")
     for red in board:
         print(red)
-    print("\n")
 
 
 def value_of_board(board):  # Ako je sto vece 2 pobedjuje, sto manje 1
+    if state_of_board(board):   # ako je neko pobedio, to je najveca(najmanja) vrednost
+        for i in range(8):
+            for j in range(8):
+                if board[i][j] == 1 or board[i][j] == 3:
+                    return INF
+                if board[i][j] == 2 or board[i][j] == 4:
+                    return -INF
+    if no_more_moves(board, 1):
+        return INF
+    if no_more_moves(board, 2):
+        return -INF
+
     jed = dva = 0
     jed_d = dva_d = 0
     for i in range(8):
@@ -72,6 +95,26 @@ def value_of_board(board):  # Ako je sto vece 2 pobedjuje, sto manje 1
             if board[r][c] == 4:
                 score += DAMA
     return (-1)*score
+
+
+def no_more_moves(board, player):
+    if player == 2:
+        for r in range(8):
+            for c in range(8):
+                if board[r][c] == 2 or board[r][c] == 4:
+                    mooves = []
+                    find_moves(board, r, c, 2, [], True, mooves)
+                    if len(mooves) != 0:
+                        return False
+    if player == 1:
+        for r in range(8):
+            for c in range(8):
+                if board[r][c] == 1 or board[r][c] == 3:
+                    mooves = []
+                    find_moves(board, r, c, 1, [], True, mooves)
+                    if len(mooves) != 0:
+                        return False
+    return True
 
 
 def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
@@ -219,6 +262,10 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
 
 
 def play_move(potez, board, pojed):
+    if len(potez) == 0:
+        print("Evo usrto se")
+        print_board(board)
+
     r = potez[0][0]
     c = potez[0][1]
 
@@ -261,14 +308,18 @@ def hash_board(board):
                 ret = "3" + ret
             if board[r][c] == 4:
                 ret = "4" + ret
-
     return ret
 
 
-def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opcija):    # depth je dubina, mp True/False, player = 1 ili 2
+def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opcija, tren_time):    # depth je dubina, mp True/False, player = 1 ili 2
+    if time.time() - tren_time > EXECTIME:
+        return value_of_board(board)
+
     if depth == 0 or state_of_board(board):
         return value_of_board(board)
+
     hash_string = hash_board(board)
+    hash_string = hash_string + to_string(player)
     if hash_string in dikt:
         if depth == max_depth:
             pojeden = []
@@ -290,26 +341,33 @@ def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opc
                 for move in moves:
                     potezi.append([(r, c)] + move)
 
+    if time.time() - tren_time > EXECTIME:
+        return value_of_board(board)
+
     ima_jedenja = False
     for potez in potezi:
         if abs(potez[0][0]-potez[1][0]) + abs(potez[0][1]-potez[1][1]) == 4:
             ima_jedenja = True
             break
 
-    new_board = board.copy()
-    best_potez = []
     if maximizing_player:
         value = -INF
     else:
         value = INF
 
+    best_potez = []
+
     for potez in potezi:
+        if len(potez) == 0:
+            continue
         if ima_jedenja and opcija == '1' and (abs(potez[0][0] - potez[1][0]) + abs(potez[0][1] - potez[1][1]) == 2):
             continue    # preskacem potez koji nema jedenja u sebi
+
         pojeden = []
         play_move(potez, board, pojeden)
-
-        tren_value = minimax(new_board, depth-1, max_depth, not maximizing_player, opposite_player(player), alpha, beta, opcija)
+        alpha2 = alpha
+        beta2 = beta
+        tren_value = minimax(board, depth-1, max_depth, not maximizing_player, opposite_player(player), alpha2, beta2, opcija, tren_time)
 
         if maximizing_player:
             if tren_value > value:
@@ -322,11 +380,17 @@ def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opc
                 best_potez = potez
             beta = min(beta, value)
 
-        restore_board(new_board, pojeden)
+        restore_board(board, pojeden)
         if beta <= alpha:
+            #print("Brekujem ", beta, " <= ", alpha)
+            break
+
+        if time.time() - tren_time > EXECTIME:
+            #print("Brekujem time > exectime")
             break
 
     dikt[hash_string] = (best_potez, value)
+    #print(hash_string)
 
     if depth == max_depth:
         pojeden = []

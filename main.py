@@ -1,5 +1,6 @@
 import pygame
 import playing
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -87,6 +88,17 @@ def draw_board():
                                  BORDER_WIDTH//2)
 
 
+def find_winner():
+    for i in range(8):
+        for j in range(8):
+            if board[i][j] == 1 or board[i][j] == 3:
+                print("Izgubili ste!")
+                return
+            if board[i][j] == 2 or board[i][j] == 4:
+                print("Pobedili ste!")
+                return
+
+
 def highlight(r, c):    # ovo zapravo napravi moves za trenutno kliknuto polje
     global moves, ima_jedenja
     if board[r][c] != 0 and board[r][c] != 1 and board[r][c] != 3:
@@ -144,7 +156,7 @@ def handle_click(pos):
     global next_move
     r = pos[1] // SQUARE_SIZE
     c = pos[0] // SQUARE_SIZE
-    print("Clicked on:", r, c)
+    #print("Clicked on:", r, c)
     #playing.print_board(next_move)
 
     if make_turn(r, c):
@@ -187,7 +199,32 @@ def main():         # Main game loop
         [0, 2, 0, 2, 0, 2, 0, 2],
         [2, 0, 2, 0, 2, 0, 2, 0]
     ]
+    board = [
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 4, 0, 0, 0, 0],
+        [0, 0, 0, 0, 4, 0, 0, 0],
+        [0, 3, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 3, 0, 3, 0]
+    ]
     while True:
+        if playing.state_of_board(board):
+            find_winner()
+            pygame.quit()
+            return
+
+        if playing.no_more_moves(board, 2):
+            print("Izgubili ste!")
+            pygame.quit()
+            return
+
+        if playing.no_more_moves(board, 1):
+            print("Pobedili ste!")
+            pygame.quit()
+            return
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -201,7 +238,10 @@ def main():         # Main game loop
         pygame.display.update()
 
         if turn_played:
-            playing.minimax(board, 7, 7, True, 1, -INF, INF, opcija)
+            start_time = time.time()
+            playing.minimax(board, 7, 7, True, 1, -INF, INF, opcija, time.time())
+            print("Potez igran: ", time.time() - start_time)
+            print("\n\n\n\n")
             turn_played = False
             find_all_moves()
 
@@ -215,6 +255,10 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Checkers")
     main()
+
+    # NECE DA POJEDE KAD OSTANE JEDAN PESAK
+    # LIK IGRA POTEZE ZA MENE
+
 '''
     board = [
         [0, 1, 0, 1, 0, 1, 0, 1],
@@ -227,14 +271,14 @@ if __name__ == "__main__":
         [2, 0, 3, 0, 0, 0, 0, 0]
     ]
     board1 = [
-        [0, 1, 0, 1, 0, 1, 0, 1],
-        [0, 0, 0, 0, 2, 0, 0, 0],
-        [0, 2, 0, 0, 0, 0, 0, 1],
-        [0, 0, 2, 0, 2, 0, 0, 0],
-        [0, 0, 0, 2, 0, 1, 0, 0],
-        [0, 0, 2, 0, 2, 0, 2, 0],
+        [0, 0, 0, 0, 0, 1, 0, 1],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [2, 0, 3, 0, 0, 0, 0, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [3, 0, 3, 0, 3, 0, 3, 0]
     ]
     board2 = [
         [0, 1, 0, 1, 0, 0, 0, 1],
