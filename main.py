@@ -149,6 +149,9 @@ def make_turn(r, c):  # kliknuto je na R, C
                 board[r][c] = 4
 
             turn_played = True
+            if playing.no_more_moves(board, 1):
+                print("Pobedili ste!")
+                pygame.quit()
             return True
 
 
@@ -199,7 +202,7 @@ def main():         # Main game loop
         [0, 2, 0, 2, 0, 2, 0, 2],
         [2, 0, 2, 0, 2, 0, 2, 0]
     ]
-    board = [
+    '''board = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
@@ -208,22 +211,10 @@ def main():         # Main game loop
         [0, 0, 0, 0, 4, 0, 0, 0],
         [0, 3, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 3, 0, 3, 0]
-    ]
+    ]'''
     while True:
-        if playing.state_of_board(board):
-            find_winner()
-            pygame.quit()
-            return
-
-        if playing.no_more_moves(board, 2):
-            print("Izgubili ste!")
-            pygame.quit()
-            return
-
-        if playing.no_more_moves(board, 1):
-            print("Pobedili ste!")
-            pygame.quit()
-            return
+        draw_board()
+        pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -233,15 +224,22 @@ def main():         # Main game loop
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 handle_click(pos)
-
         draw_board()
         pygame.display.update()
+
+        if playing.state_of_board(board):
+            find_winner()
+            pygame.quit()
+            return
+        if playing.no_more_moves(board, 2):
+            pygame.quit()
+            return
 
         if turn_played:
             start_time = time.time()
             playing.minimax(board, 7, 7, True, 1, -INF, INF, opcija, time.time())
             print("Potez igran: ", time.time() - start_time)
-            print("\n\n\n\n")
+            print("\n")
             turn_played = False
             find_all_moves()
 

@@ -1,8 +1,8 @@
 import time
 
 DAMA = 40
-INF = 100000000
-EXECTIME = 5    # execution time of minimnax algoritahm
+INF = 10000000
+EXECTIME = 5  # execution time of minimnax algoritahm
 
 moves = []
 value_dame = [0, 50, 90, 120, 145, 167, 187, 207, 220, 233, 246, 255, 260]
@@ -53,7 +53,7 @@ def print_board(board):
 
 
 def value_of_board(board):  # Ako je sto vece 2 pobedjuje, sto manje 1
-    if state_of_board(board):   # ako je neko pobedio, to je najveca(najmanja) vrednost
+    if state_of_board(board):  # ako je neko pobedio, to je najveca(najmanja) vrednost
         for i in range(8):
             for j in range(8):
                 if board[i][j] == 1 or board[i][j] == 3:
@@ -94,7 +94,7 @@ def value_of_board(board):  # Ako je sto vece 2 pobedjuje, sto manje 1
                 score -= DAMA
             if board[r][c] == 4:
                 score += DAMA
-    return (-1)*score
+    return (-1) * score
 
 
 def no_more_moves(board, player):
@@ -107,6 +107,7 @@ def no_more_moves(board, player):
                     if len(mooves) != 0:
                         return False
     if player == 1:
+
         for r in range(8):
             for c in range(8):
                 if board[r][c] == 1 or board[r][c] == 3:
@@ -126,7 +127,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             if in_bounds(r + 1, c - 1) and board[r + 1][c - 1] == 0:
                 moves.append([(r + 1, c - 1)])
 
-        if in_bounds(r + 2, c + 2) and (board[r + 1][c + 1] == 2 or board[r + 1][c + 1] == 4) and board[r + 2][c + 2] == 0:
+        if in_bounds(r + 2, c + 2) and (board[r + 1][c + 1] == 2 or board[r + 1][c + 1] == 4) and board[r + 2][
+            c + 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r + 2, c + 2))
             moves.append(novi_dosad)
@@ -140,7 +142,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             board[r + 1][c + 1] = pojeden
             board[r][c], board[r + 2][c + 2] = board[r + 2][c + 2], board[r][c]
 
-        if in_bounds(r+2, c-2) and (board[r+1][c-1] == 2 or board[r+1][c-1] == 4) and board[r+2][c-2] == 0:
+        if in_bounds(r + 2, c - 2) and (board[r + 1][c - 1] == 2 or board[r + 1][c - 1] == 4) and board[r + 2][
+            c - 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r + 2, c - 2))
             moves.append(novi_dosad)
@@ -161,7 +164,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             if in_bounds(r - 1, c + 1) and board[r - 1][c + 1] == 0:
                 moves.append([(r - 1, c + 1)])
 
-        if in_bounds(r - 2, c - 2) and (board[r - 1][c - 1] == 1 or board[r - 1][c - 1] == 3) and board[r - 2][c - 2] == 0:
+        if in_bounds(r - 2, c - 2) and (board[r - 1][c - 1] == 1 or board[r - 1][c - 1] == 3) and board[r - 2][
+            c - 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r - 2, c - 2))
             moves.append(novi_dosad)
@@ -175,7 +179,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             board[r - 1][c - 1] = pojeden
             board[r - 2][c - 2], board[r][c] = board[r][c], board[r - 2][c - 2]
 
-        if in_bounds(r - 2, c + 2) and (board[r - 1][c + 1] == 1 or board[r - 1][c + 1] == 3) and board[r - 2][c + 2] == 0:
+        if in_bounds(r - 2, c + 2) and (board[r - 1][c + 1] == 1 or board[r - 1][c + 1] == 3) and board[r - 2][
+            c + 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r - 2, c + 2))
             moves.append(novi_dosad)
@@ -197,21 +202,23 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             if in_bounds(r - 1, c + 1) and board[r - 1][c + 1] == 0:
                 moves.append([(r - 1, c + 1)])
 
-        if in_bounds(r - 2, c - 2) and (board[r - 1][c - 1] == 2 or board[r - 1][c - 1] == 4) and board[r - 2][c - 2] == 0:
+        if in_bounds(r - 2, c - 2) and (board[r - 1][c - 1] == 2 or board[r - 1][c - 1] == 4) and board[r - 2][
+            c - 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r - 2, c - 2))
             moves.append(novi_dosad)
 
             pojeden = board[r - 1][c - 1]
             board[r - 1][c - 1] = 0
-            board[r - 2][c - 2],  board[r][c] = board[r][c], board[r - 2][c - 2]
+            board[r - 2][c - 2], board[r][c] = board[r][c], board[r - 2][c - 2]
 
             find_moves(board, r - 2, c - 2, igrac, novi_dosad, False, moves)
 
             board[r - 1][c - 1] = pojeden
-            board[r - 2][c - 2],  board[r][c] = board[r][c], board[r - 2][c - 2]
+            board[r - 2][c - 2], board[r][c] = board[r][c], board[r - 2][c - 2]
 
-        if in_bounds(r - 2, c + 2) and (board[r - 1][c + 1] == 2 or board[r - 1][c + 1] == 4) and board[r - 2][c + 2] == 0:
+        if in_bounds(r - 2, c + 2) and (board[r - 1][c + 1] == 2 or board[r - 1][c + 1] == 4) and board[r - 2][
+            c + 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r - 2, c + 2))
             moves.append(novi_dosad)
@@ -232,7 +239,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             if in_bounds(r + 1, c - 1) and board[r + 1][c - 1] == 0:
                 moves.append([(r + 1, c - 1)])
 
-        if in_bounds(r + 2, c + 2) and (board[r + 1][c + 1] == 1 or board[r + 1][c + 1] == 3) and board[r + 2][c + 2] == 0:
+        if in_bounds(r + 2, c + 2) and (board[r + 1][c + 1] == 1 or board[r + 1][c + 1] == 3) and board[r + 2][
+            c + 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r + 2, c + 2))
             moves.append(novi_dosad)
@@ -246,7 +254,8 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
             board[r + 1][c + 1] = pojeden
             board[r][c], board[r + 2][c + 2] = board[r + 2][c + 2], board[r][c]
 
-        if in_bounds(r+2, c-2) and (board[r+1][c-1] == 1 or board[r+1][c-1] == 3) and board[r+2][c-2] == 0:
+        if in_bounds(r + 2, c - 2) and (board[r + 1][c - 1] == 1 or board[r + 1][c - 1] == 3) and board[r + 2][
+            c - 2] == 0:
             novi_dosad = dosad.copy()
             novi_dosad.append((r + 2, c - 2))
             moves.append(novi_dosad)
@@ -263,7 +272,7 @@ def find_moves(board, r, c, igrac, dosad, prvi_potez, moves):
 
 def play_move(potez, board, pojed):
     if len(potez) == 0:
-        print("Evo usrto se")
+        print("len(potez) == 0 u play_move")
         print_board(board)
 
     r = potez[0][0]
@@ -276,8 +285,8 @@ def play_move(potez, board, pojed):
         c2 = potez[tup][1]
 
         if (abs(r2 - r) + abs(c2 - c)) == 4:
-            pojed.append((r+(r2-r)//2, c+(c2-c)//2, board[r+(r2-r)//2][c+(c2-c)//2]))
-            board[r+(r2-r)//2][c+(c2-c)//2] = 0   # uklanjam pojedenog
+            pojed.append((r + (r2 - r) // 2, c + (c2 - c) // 2, board[r + (r2 - r) // 2][c + (c2 - c) // 2]))
+            board[r + (r2 - r) // 2][c + (c2 - c) // 2] = 0  # uklanjam pojedenog
 
         pojed.append((r2, c2, board[r2][c2]))
         board[r2][c2] = board[r][c]
@@ -294,38 +303,39 @@ def restore_board(board, pojed):
         board[tup[0]][tup[1]] = tup[2]
 
 
-def hash_board(board):
-    ret = ""
+def hashuj(board, player):
+    ret = 0
+    mod = 1000000007
+    pret = 1
+    d = 5
     for r in range(8):
         for c in range(8):
-            if board[r][c] == 0:
-                ret = "0" + ret
-            if board[r][c] == 1:
-                ret = "1" + ret
-            if board[r][c] == 2:
-                ret = "2" + ret
-            if board[r][c] == 3:
-                ret = "3" + ret
-            if board[r][c] == 4:
-                ret = "4" + ret
-    return ret
+            ret = (ret + (board[r][c] * pret) % mod) % mod
+            pret = (pret * d) % mod
+
+    if player == 1:
+        return ret
+    else:
+        return -ret
 
 
-def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opcija, tren_time):    # depth je dubina, mp True/False, player = 1 ili 2
+def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opcija,
+            tren_time):  # depth je dubina, mp True/False, player = 1 ili 2
     if time.time() - tren_time > EXECTIME:
         return value_of_board(board)
 
     if depth == 0 or state_of_board(board):
         return value_of_board(board)
 
-    hash_string = hash_board(board)
-    hash_string = hash_string + to_string(player)
-    if hash_string in dikt:
+    hash_value = hashuj(board, player)
+
+    if hash_value in dikt:
+        if hash_value == 701166900:
+            print("Vrednost je u dictiaNORU: ", dikt[hash_value][1])
         if depth == max_depth:
             pojeden = []
-            play_move(dikt[hash_string][0], board, pojeden)
-        return dikt[hash_string][1]
-
+            play_move(dikt[hash_value][0], board, pojeden)
+        return dikt[hash_value][1]
     global moves
     potezi = []
     for r in range(8):
@@ -343,10 +353,14 @@ def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opc
 
     if time.time() - tren_time > EXECTIME:
         return value_of_board(board)
+    if hash_value == 701166900:
+        print_board(board)
+        print(depth)
+        print(len(potezi))
 
     ima_jedenja = False
     for potez in potezi:
-        if abs(potez[0][0]-potez[1][0]) + abs(potez[0][1]-potez[1][1]) == 4:
+        if abs(potez[0][0] - potez[1][0]) + abs(potez[0][1] - potez[1][1]) == 4:
             ima_jedenja = True
             break
 
@@ -361,13 +375,13 @@ def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opc
         if len(potez) == 0:
             continue
         if ima_jedenja and opcija == '1' and (abs(potez[0][0] - potez[1][0]) + abs(potez[0][1] - potez[1][1]) == 2):
-            continue    # preskacem potez koji nema jedenja u sebi
+            continue  # preskacem potez koji nema jedenja u sebi
 
         pojeden = []
         play_move(potez, board, pojeden)
-        alpha2 = alpha
-        beta2 = beta
-        tren_value = minimax(board, depth-1, max_depth, not maximizing_player, opposite_player(player), alpha2, beta2, opcija, tren_time)
+
+        tren_value = minimax(board, depth - 1, max_depth, not maximizing_player, opposite_player(player), alpha, beta,
+                             opcija, tren_time)
 
         if maximizing_player:
             if tren_value > value:
@@ -382,15 +396,12 @@ def minimax(board, depth, max_depth, maximizing_player, player, alpha, beta, opc
 
         restore_board(board, pojeden)
         if beta <= alpha:
-            #print("Brekujem ", beta, " <= ", alpha)
             break
 
         if time.time() - tren_time > EXECTIME:
-            #print("Brekujem time > exectime")
             break
 
-    dikt[hash_string] = (best_potez, value)
-    #print(hash_string)
+    dikt[hash_value] = (best_potez, value)
 
     if depth == max_depth:
         pojeden = []
