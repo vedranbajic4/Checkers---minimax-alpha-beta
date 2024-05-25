@@ -32,7 +32,7 @@ BLACK_CHIP2 = pygame.transform.scale(BLACK_CHIP2, (SQUARE_SIZE - 2 * PADDING, SQ
 # Create the display surface
 turn_played = False
 moves = []
-opcija = '1'
+opcija = '2'
 ima_jedenja = False
 # Checkers board representation, 1=red, 2=black
 
@@ -134,6 +134,7 @@ def make_turn(r, c):  # kliknuto je na R, C
                 ru = i
                 cu = j
                 break
+
     #print("Pocinjem sa polja: ", ru, " ", cu)
     for move in moves:
         if move[-1][0] == r and move[-1][1] == c:
@@ -151,11 +152,14 @@ def make_turn(r, c):  # kliknuto je na R, C
             turn_played = True
             if playing.no_more_moves(board, 1):
                 print("Pobedili ste!")
+                #print("Protivnik je ostao bez poteza")
                 pygame.quit()
+                exit(0)
             return True
 
 
 def handle_click(pos):
+    #print("Handle click")
     global next_move
     r = pos[1] // SQUARE_SIZE
     c = pos[0] // SQUARE_SIZE
@@ -202,15 +206,36 @@ def main():         # Main game loop
         [0, 2, 0, 2, 0, 2, 0, 2],
         [2, 0, 2, 0, 2, 0, 2, 0]
     ]
-    '''board = [
+    '''
+    board = [
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 4, 0, 0, 0, 0],
-        [0, 0, 0, 0, 4, 0, 0, 0],
-        [0, 3, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 3, 0, 3, 0]
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    board = [
+        [0, 1, 0, 1, 0, 1, 0, 1],
+        [1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0],
+        [2, 0, 1, 0, 0, 0, 2, 0],
+        [0, 0, 0, 0, 0, 0, 0, 2],
+        [2, 0, 2, 0, 2, 0, 0, 0],
+        [0, 2, 0, 0, 0, 0, 0, 0],
+        [2, 0, 2, 0, 2, 0, 2, 0]
+    ]
+    board = [
+        [0, 0, 0, 4, 0, 4, 0, 0],
+        [2, 0, 1, 0, 0, 0, 4, 0],
+        [0, 0, 0, 0, 0, 0, 0, 3],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 2],
+        [0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0],
+        [2, 0, 0, 0, 0, 0, 0, 0]
     ]'''
     while True:
         draw_board()
@@ -228,6 +253,7 @@ def main():         # Main game loop
         pygame.display.update()
 
         if playing.state_of_board(board):
+            #print("State of board")
             find_winner()
             pygame.quit()
             return
@@ -236,8 +262,9 @@ def main():         # Main game loop
             return
 
         if turn_played:
+            #print("Pocinje")
             start_time = time.time()
-            playing.minimax(board, 7, 7, True, 1, -INF, INF, opcija, time.time())
+            playing.minimax(board, 6, 6, True, 1, -INF, INF, opcija, time.time())
             print("Potez igran: ", time.time() - start_time)
             print("\n")
             turn_played = False
@@ -245,58 +272,10 @@ def main():         # Main game loop
 
 
 if __name__ == "__main__":
-    '''while True:
+    while True:
         opcija = input("Da li su potezi jedenja obavezni? 1 da, 2 ne: ")
         if opcija == '1' or opcija == '2':
-            break'''
-    opcija = '2'
+            break
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Checkers")
     main()
-
-    # NECE DA POJEDE KAD OSTANE JEDAN PESAK
-    # LIK IGRA POTEZE ZA MENE
-
-'''
-    board = [
-        [0, 1, 0, 1, 0, 1, 0, 1],
-        [0, 0, 0, 0, 2, 0, 0, 0],
-        [0, 2, 0, 0, 0, 0, 0, 1],
-        [0, 0, 2, 0, 2, 0, 1, 0],
-        [0, 0, 0, 2, 0, 0, 0, 0],
-        [0, 0, 2, 0, 2, 0, 2, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [2, 0, 3, 0, 0, 0, 0, 0]
-    ]
-    board1 = [
-        [0, 0, 0, 0, 0, 1, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [3, 0, 3, 0, 3, 0, 3, 0]
-    ]
-    board2 = [
-        [0, 1, 0, 1, 0, 0, 0, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 2, 0, 0, 0, 0, 0, 1],
-        [0, 0, 2, 0, 0, 0, 1, 0],
-        [0, 0, 0, 2, 0, 0, 0, 0],
-        [0, 0, 2, 0, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1],
-        [2, 0, 3, 0, 0, 0, 0, 0]
-    ]
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit(0)
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                playing.minimax(board, 5, 5, True, 1, -INF, INF)
-
-        draw_board()
-        pygame.display.update()'''
