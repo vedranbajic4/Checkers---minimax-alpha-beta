@@ -47,7 +47,7 @@ someone wins or you exit the game.
 Good luck!
 
 ## 🧠 AI bot
-The bot against you will uses **mini-max algorithm** with **alpha beta prunning** for time optimization.
+The bot against you will play uses **mini-max algorithm** with **alpha beta prunning** for time optimization.
 ### Minimax algorithm🧠
 The **Minimax algorithm** is a decision-making algorithm used in turn-based games.
 It assumes that both players play optimally and tries to minimize the potential loss while
